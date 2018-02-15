@@ -10,6 +10,7 @@ import geocoder
 payload = {'__a': '1'}
 user_pagination_sufix = '?__a=1&max_id='
 
+print('Welcome to the script!')
 print('\n\n')
 
 #Set the path to input scv with user and output here
