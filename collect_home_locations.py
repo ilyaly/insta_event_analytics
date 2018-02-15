@@ -3,20 +3,34 @@ import requests
 import time
 import csv
 import json
-import multiprocessing
+import geocoder
 
 #This script collects a list with homes loactions of given users
 
 payload = {'__a': '1'}
 user_pagination_sufix = '?__a=1&max_id='
 
+
 #Set the path to input scv with user and output here
 
-users_csv = ''
-output = ''
+users_csv = input('Enter the path to CSV with user names : \n')
+output = input('Enter the output directory: \n')
+geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you do not. \nATTENTION: processing with geocoding, will take much more time')
+if geocoding_option == 'YES':
+    geocoding_option = True
+elif geocoding_option == 'NO':
+    geocoding_option = False
+else:
+    print('You have entered the wrong value! Please enter YES or NO')
+    geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you dont')
+
+
+output_file = output + 'homes.csv'
+output_temp_file = output + 'homes_temporary.csv'
+output_file_geo = output + 'homes_geo.csv'
+output_temp_file_geo = output + 'homes_geo_temporary.csv'
 
 def save_list_as_scv(output_path,list,encoding='utf-8'):
-    print('Saving to csv')
     with open(output_path, "w") as output:
         writer = csv.writer(output, lineterminator='\n')
         for val in list:
@@ -30,11 +44,9 @@ def save_list_as_scv(output_path,list,encoding='utf-8'):
                 except: pass ; writer.writerow(['undefined'])
 
 
-    print('Saving to csv has been finished!')
-
 def open_csv_as_list(path_to_csv):
     users = []
-    with open('D://users.csv', 'r') as f:
+    with open(path_to_csv, 'r') as f:
         reader = csv.reader(f)
         pages_list = list(reader)
     for p in pages_list:
@@ -127,25 +139,29 @@ def get_user_home_location_from_posts(posts_urls):
             except: user_home_location = 'not defined'
 
 
-    print('User_home_collected..' + str(time.clock()) + ' ' + str(user_home_location))
+    print(str(user_home_location) + 'collected in ' + str(int(time.clock())) + ' seconds -' )
     return user_home_location
 
 def get_home_locations_for_users_list(users_list):
+    print('Collecting home locations')
+    users_home_locations_geo_list = []
     users_home_locations_list = []
     for user in users_list:
         posts_urls = get_user_posts_urls(user)
         home_location = get_user_home_location_from_posts(posts_urls)
         users_home_locations_list.append(home_location)
-        save_list_as_scv('D://temp_homes.csv',users_home_locations_list)
-        print(users_home_locations_list)
-    return users_home_locations_list
+        user_home_geo = geocoder.google(str(home_location)).latlng
+        users_home_locations_geo_list.append(str(user_home_geo))
+        save_list_as_scv(output_temp_file,users_home_locations_list)
+        save_list_as_scv(output_temp_file_geo,users_home_locations_geo_list)
+    return users_home_locations_list, users_home_locations_geo_list
 
 
 
 if __name__ == '__main__':
     users = open_csv_as_list(users_csv)
-    #pool = multiprocessing.Pool(processes=10)
-    #homes = pool.map(get_home_locations_for_users_list,users)
-    homes = get_home_locations_for_users_list(users)
-
-    save_list_as_scv(outputpath,homes)
+    homes = get_home_locations_for_users_list(users)[0]
+    geo = get_home_locations_for_users_list(users)[1]
+    save_list_as_scv(output_file,homes)
+    save_list_as_scv(output_file_geo,geo)
+    print("Finished!")
