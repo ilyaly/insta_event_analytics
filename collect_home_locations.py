@@ -10,19 +10,20 @@ import geocoder
 payload = {'__a': '1'}
 user_pagination_sufix = '?__a=1&max_id='
 
+print('\n\n')
 
 #Set the path to input scv with user and output here
 
 users_csv = input('Enter the path to CSV with user names : \n')
 output = input('Enter the output directory: \n')
-geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you do not. \nATTENTION: processing with geocoding, will take much more time')
+geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you do not. \nATTENTION: processing with geocoding, will take much more time\n ')
 if geocoding_option == 'YES':
     geocoding_option = True
 elif geocoding_option == 'NO':
     geocoding_option = False
 else:
-    print('You have entered the wrong value! Please enter YES or NO')
-    geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you dont')
+    print('You have entered the wrong value! Please enter YES or NO\n')
+    geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you dont\n')
 
 
 output_file = output + 'homes.csv'
@@ -150,10 +151,13 @@ def get_home_locations_for_users_list(users_list):
         posts_urls = get_user_posts_urls(user)
         home_location = get_user_home_location_from_posts(posts_urls)
         users_home_locations_list.append(home_location)
-        user_home_geo = geocoder.google(str(home_location)).latlng
-        users_home_locations_geo_list.append(str(user_home_geo))
-        save_list_as_scv(output_temp_file,users_home_locations_list)
-        save_list_as_scv(output_temp_file_geo,users_home_locations_geo_list)
+        save_list_as_scv(output_temp_file, users_home_locations_list)
+        if geocoding_option is True:
+            user_home_geo = geocoder.google(str(home_location)).latlng
+            users_home_locations_geo_list.append(str(user_home_geo))
+            save_list_as_scv(output_temp_file_geo, users_home_locations_geo_list)
+        else: pass
+
     return users_home_locations_list, users_home_locations_geo_list
 
 
@@ -163,5 +167,7 @@ if __name__ == '__main__':
     homes = get_home_locations_for_users_list(users)[0]
     geo = get_home_locations_for_users_list(users)[1]
     save_list_as_scv(output_file,homes)
-    save_list_as_scv(output_file_geo,geo)
+    if geocoding_option is True:
+        save_list_as_scv(output_file_geo,geo)
+    else: pass
     print("Finished!")
