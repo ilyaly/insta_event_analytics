@@ -28,9 +28,9 @@ else:
 
 
 output_file = output + 'homes.csv'
-output_temp_file = output + 'homes_temporary.csv'
-output_file_geo = output + 'homes_geo.csv'
-output_temp_file_geo = output + 'homes_geo_temporary.csv'
+output_temp_file = output + '_homes_temporary.csv'
+output_file_geo = output + '_homes_geo.csv'
+output_temp_file_geo = output + '_homes_geo_temporary.csv'
 
 def save_list_as_scv(output_path,list,encoding='utf-8'):
     with open(output_path, "w") as output:
@@ -89,6 +89,7 @@ def get_user_posts_urls(username,number_of_pages=5):
             cursor = respose['user']['media']['page_info']['end_cursor']
             if cursor is not None:
                 next_page_url = main_page_url + user_pagination_sufix + cursor
+
         except requests.exceptions.HTTPError as errh:
             print("Http Error:", errh); time.sleep(10)
             time.sleep(10)
@@ -98,6 +99,8 @@ def get_user_posts_urls(username,number_of_pages=5):
         except requests.exceptions.Timeout as errt:
             print("Timeout Error:", errt); time.sleep(10)
             time.sleep(10)
+        except json.decoder.JSONDecodeError as jerr:
+            print('Json error', jerr)
         except requests.exceptions.RequestException as err:
             print("OOps: Something Else 1", err)
 
@@ -141,7 +144,7 @@ def get_user_home_location_from_posts(posts_urls):
             except: user_home_location = 'not defined'
 
 
-    print(str(user_home_location) + 'collected in ' + str(int(time.clock())) + ' seconds -' )
+    print(str(user_home_location) + ', collected in ' + str(int(time.clock())) + ' seconds -' )
     return user_home_location
 
 def get_home_locations_for_users_list(users_list):
