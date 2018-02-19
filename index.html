@@ -27,6 +27,7 @@
   <!-- Insert HTML division tag to layout the map -->
   <div id="map"></div>
 
+
   <!-- Insert Javascript (.js) code to create the map -->
   <script>
   // Set up initial map center and zoom level
@@ -47,12 +48,12 @@
 
 
   var geojsonMarkerOptions = {
-    radius: 3,
+    radius: 10,
     fillColor: "green",
-    color: "green",
+    color: "red",
     weight: 5,
     opacity: 0.01,
-    fillOpacity: 0.1
+    fillOpacity: 0.02
   };
 
 
@@ -71,7 +72,12 @@
           map.fitBounds(runLayer.getBounds());
       }).addTo(map);
 
-
+  var testLayer = omnivore.csv('locations.csv', null, styledLayer)
+      .on('ready', function() {
+          // http://leafletjs.com/reference.html#map-fitbounds
+          map.fitBounds(runLayer.getBounds());
+      })
+   console.log(testLayer)
 
   </script>
 </body>
