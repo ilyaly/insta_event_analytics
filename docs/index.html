@@ -3,7 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"/>
   </head>
   <body style="width:100%; height:100%; margin:0; padding:0;">
 	<div id="leaflet" style="width:100vw; height:100vh;"></div>
@@ -32630,7 +32630,7 @@ var obj = {
 };
     </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster-src.js"></script>
+	<script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster-src.js"></script>
 	<script>
       function randomColor() {
         var color = '', letters = '0123456'; //789ABCDEF
@@ -32638,8 +32638,8 @@ var obj = {
         return '#' + color;
       }
       var leaflet = L.map('leaflet').setView([49.76782772308692, 33.40609195942309], 2);
-      L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom:18, attribution:'', id:'mapbox.light'
+      L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
+        maxZoom:18, attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', id:'mapbox.light'
       }).addTo(leaflet);
       function onEachFeature(feature, layer) {
         if (feature.properties) {

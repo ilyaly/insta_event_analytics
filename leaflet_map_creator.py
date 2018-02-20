@@ -44,7 +44,7 @@ as a Leaflet visualization.
 """
 def html(obj,\
          src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3',\
-         service = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'\
+         service = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'\
         ):
     meta = '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
     link = '<link rel="stylesheet" href="' + src + '/leaflet.css" />'
@@ -60,7 +60,7 @@ def html(obj,\
       }
       var leaflet = L.map('leaflet').setView(''' + str(coordinates_center(obj)) + ''', 2);
       L.tileLayer("''' + service + '''", {
-        maxZoom:18, attribution:'', id:'mapbox.light'
+        maxZoom:18, attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', id:'mapbox.light'
       }).addTo(leaflet);
       function onEachFeature(feature, layer) {
         if (feature.properties) {
@@ -85,7 +85,7 @@ def html(obj,\
 
 def html_clust(obj,\
          src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3',\
-         service = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'\
+         service = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'\
         ):
     meta = '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
     link = '<link rel="stylesheet" href="' + src + '/leaflet.css" />' + '\n' + '<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"/>'
@@ -100,9 +100,9 @@ def html_clust(obj,\
         for (var i=0; i<6; i++) {color += letters[Math.floor(Math.random() * letters.length)];}
         return '#' + color;
       }
-      var leaflet = L.map('leaflet').setView([49.76782772308692, 33.40609195942309], 2);
-      L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom:18, attribution:'', id:'mapbox.light'
+      var leaflet = L.map('leaflet').setView(''' + str(coordinates_center(obj)) + ''', 2);
+      L.tileLayer("''' + service + '''", {
+        maxZoom:18, attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>', id:'mapbox.light'
       }).addTo(leaflet);
       function onEachFeature(feature, layer) {
         if (feature.properties) {
