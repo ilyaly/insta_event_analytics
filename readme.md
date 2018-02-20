@@ -38,4 +38,4 @@
 **Зависимости**
 
 Python 3,
-Libs: geocoder
+Libs: geocoder.py, geojson.py
