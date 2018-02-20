@@ -7,7 +7,7 @@
 
 **А есть примеры?**
 
-С примером карты-результата можно ознакомится по ссылке: https://ilyaly.github.io/insta_event_analytics/
+С примером карты-результата можно ознакомится по ссылке: https://ilyaly.github.io/insta_event_analytics/index.html
 
 **Как это работает?**
 
