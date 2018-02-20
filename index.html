@@ -3,6 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css"/>
   </head>
   <body style="width:100%; height:100%; margin:0; padding:0;">
 	<div id="leaflet" style="width:100vw; height:100vh;"></div>
@@ -32629,6 +32631,7 @@ var obj = {
 };
     </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster-src.js"></script>
 	<script>
       function randomColor() {
         var color = '', letters = '0123456'; //789ABCDEF
@@ -32646,16 +32649,19 @@ var obj = {
               popupContent += feature.properties.popupContent;
           layer.bindPopup(popupContent);
         }
-      }
-      L.geoJson(obj, {
+      };
+      var markers = L.markerClusterGroup();
+      var layer = L.geoJson(obj, {
         filter: function (feature, layer) { return true; },
         onEachFeature: onEachFeature,
         style: function (feature) { return {"color": randomColor()}; },
         pointToLayer:
           function (feature, latlng) {
-            return L.circleMarker(latlng, {radius:4, weight:0.1, fillColor:"#6666AA", color:"#6666AA", opacity:1, fillOpacity:1});
+            return L.circleMarker(latlng, {radius:6, weight:0.1, fillColor:"#6666AA", color:"#6666AA", opacity:0.1, fillOpacity:0.1});
           }
-      }).addTo(leaflet);
+      });
+      markers.addLayer(layer);
+      leaflet.addLayer(markers)
 	</script>
   </body>
 </html>
