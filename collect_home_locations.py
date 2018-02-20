@@ -3,7 +3,7 @@ import requests
 import time
 import csv
 import json
-import geocoder
+from geocoder import *
 
 #This script collects a list with homes loactions of given users
 
@@ -11,7 +11,7 @@ payload = {'__a': '1'}
 user_pagination_sufix = '?__a=1&max_id='
 
 print('Welcome to the script!')
-print('\n\n')
+print('\n')
 
 #Set the path to input scv with user and output here
 
@@ -28,9 +28,7 @@ else:
 
 
 output_file = output + 'homes.csv'
-output_temp_file = output + '_homes_temporary.csv'
 output_file_geo = output + '_homes_geo.csv'
-output_temp_file_geo = output + '_homes_geo_temporary.csv'
 
 def save_list_as_scv(output_path,list,encoding='utf-8'):
     with open(output_path, "w") as output:
@@ -155,11 +153,11 @@ def get_home_locations_for_users_list(users_list):
         posts_urls = get_user_posts_urls(user)
         home_location = get_user_home_location_from_posts(posts_urls)
         users_home_locations_list.append(home_location)
-        save_list_as_scv(output_temp_file, users_home_locations_list)
+        save_list_as_scv(output_file, users_home_locations_list)
         if geocoding_option is True:
-            user_home_geo = geocoder.google(str(home_location)).latlng
+            user_home_geo = geocoder.arcgis(str(home_location)).latlng
             users_home_locations_geo_list.append(str(user_home_geo))
-            save_list_as_scv(output_temp_file_geo, users_home_locations_geo_list)
+            save_list_as_scv(output_file_geo, users_home_locations_geo_list)
         else: pass
 
     return users_home_locations_list, users_home_locations_geo_list

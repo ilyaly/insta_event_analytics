@@ -19,13 +19,13 @@ if number_of_pages_option == 'YES':
     number_of_pages_option = True
 elif number_of_pages_option == 'NO':
     number_of_pages_option = False
-    number_of_pages_to_parse = input('Enter number of pages to parse: ')
+    number_of_pages_to_parse = int(input('Enter number of pages to parse: '))
 else :
     print('You have entered the wrong value! Please enter YES or NO')
     number_of_pages_option = input('Enter YES if you would like to parse all pages with given hashtag\nenter NO if you would like to specify number of pages to parse: ')
 
 output_file = output +  hashtag + '_users.csv'
-output_temp_file = output + hashtag + '_users_temporary.csv'
+
 
 def save_list_as_scv(output_path,list):
     print('Saving to csv')
@@ -37,15 +37,17 @@ def save_list_as_scv(output_path,list):
 
 
 def get_usernames(url):
-    print('Process started')
+    print('Collecting usernames..')
     user_names = []
     try:
         page = requests.get(url,params=payload).json()['graphql']['hashtag']['edge_hashtag_to_media']['edges']
         for p in page:
             shortcode = p['node']['shortcode']
-            user_name = requests.get(post_url + shortcode, params=payload).json()['graphql']['shortcode_media']['owner']['username']
-            print(user_name)
-            user_names.append(user_name)
+            try:
+                user_name = requests.get(post_url + shortcode, params=payload).json()['graphql']['shortcode_media']['owner']['username']
+                print(user_name + ' processing time: ' + str(round(time.clock(),2)))
+                user_names.append(user_name)
+            except: pass
     except requests.exceptions.HTTPError as errh:
         print("Http Error:", errh);
         time.sleep(10)
@@ -78,7 +80,7 @@ def get_taged_pages(hashtag):
                 if cursor is not None:
                     page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor #getting next page
                     pages_list.append(page_url)
-                    print('...')
+                    print('processing time...' + str(round(time.clock(), 2)) + " seconds")
             except requests.exceptions.HTTPError as errh:
                 print("Http Error:", errh);
                 time.sleep(10)
@@ -98,7 +100,7 @@ def get_taged_pages(hashtag):
                 if cursor is not None:
                     page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor #getting next page
                     pages_list.append(page_url)
-                    print('...')
+                    print('processing time...' + str(round(time.clock(), 2)) + " seconds")
             except requests.exceptions.HTTPError as errh:
                 print("Http Error:", errh);
                 time.sleep(10)
@@ -110,15 +112,15 @@ def get_taged_pages(hashtag):
                 time.sleep(10)
             except requests.exceptions.RequestException as err:
                 print("OOps: Something Else", err)
-        print('Collecting pages with taged post has been finished in ' + str(time.clock()))
-        return pages_list
+    return pages_list
 
 def all_users(pages_list):
     all_users = []
     for p in pages_list:
-        users = get_usernames(p)
-        all_users.append(users)
-        save_list_as_scv(output_temp_file,all_users)
+        if p is not None:
+            users = get_usernames(p)
+            all_users.append(users)
+        else: print('NoneType error..'); pass
     return all_users
 
 if __name__ == '__main__':
@@ -129,5 +131,5 @@ if __name__ == '__main__':
      for u_list in user_names_list:
          for us in u_list:
                  unique_users.append(us)
-     print(unique_users)
      save_list_as_scv(output_file,unique_users)
+     print('Processing has been finished!')
