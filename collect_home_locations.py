@@ -3,7 +3,7 @@ import requests
 import time
 import csv
 import json
-from geocoder import *
+from csv_geocode import *
 
 #This script collects a list with homes loactions of given users
 
