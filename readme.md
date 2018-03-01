@@ -1,3 +1,4 @@
+![](/ui_apps/insta.jpg)
 # Insta events analytics - Аналитика туристских потоков c использованием данных Instagram
 ![](/docs/clust_map.jpg)
 **Что это?**
