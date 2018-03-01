@@ -15,9 +15,15 @@ def csv_to_json(path_to_csv):
         reader = csv.reader(f)
         pages_list = list(reader)
     for p in pages_list:
-        val = p
-        j_point = Feature(geometry=Point((float(val[1]),float(val[0]))))
-        features_list.append(j_point)
+        val = p[0]
+        val = val.replace('[', '')
+        val = val.replace(']', '')
+        val = val.replace(',', '')
+        val = val.split()
+        try:
+            j_point = Feature(geometry=Point((float(val[1]),float(val[0]))))
+            features_list.append(j_point)
+        except: pass
     feature_collection = FeatureCollection(features_list)
     return feature_collection
 

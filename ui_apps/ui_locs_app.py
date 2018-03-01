@@ -19,7 +19,7 @@ geocoding_option = True
 
 app = QApplication(sys.argv)
 w = QWidget()
-w.setWindowTitle('Insta event analytics')
+w.setWindowTitle('Users home locations')
 w.setWindowIcon(QtGui.QIcon('C:\\Users\\Admin\\Desktop\\insta.jpg'))
 w.resize(440, 150)
 
@@ -52,10 +52,9 @@ def get_out_dir():
     return direct
 def run_app():
     output = dirlist[0]
-    # output.replace('\\','\\\\')
     users_csv = filelist[0]
-    output_file = output + 'homes.csv'
-    output_file_geo = output + '_homes_geo.csv'
+    output_file = output + '\homes.csv'
+    output_file_geo = output + '\_homes_geo.csv'
 
     def save_list_as_scv(output_path,list,encoding='utf-8'):
         with open(output_path, "w") as output:
@@ -156,6 +155,7 @@ def run_app():
                     user_locations.append('notdefined')
                 except requests.exceptions.RequestException as err:
                     print("OOps: Something Else 2", err)
+                except: pass
         count_locations = Counter(user_locations)
         try:
             user_home_location = count_locations.most_common(1)[0][0]
@@ -184,7 +184,7 @@ def run_app():
             save_list_as_scv(output_file, users_home_locations_list)
             if geocoding_option is True:
                 user_home_geo = geocoder.arcgis(str(home_location)).latlng
-                users_home_locations_geo_list.append(str(user_home_geo))
+                users_home_locations_geo_list.append(user_home_geo)
                 save_list_as_scv(output_file_geo, users_home_locations_geo_list)
             else: pass
 

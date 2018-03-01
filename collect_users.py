@@ -24,7 +24,7 @@ else :
     print('You have entered the wrong value! Please enter YES or NO')
     number_of_pages_option = input('Enter YES if you would like to parse all pages with given hashtag\nenter NO if you would like to specify number of pages to parse: ')
 
-output_file = output +  hashtag + '_users.csv'
+output_file = output +  hashtag + '\_users.csv'
 
 
 def save_list_as_scv(output_path,list):

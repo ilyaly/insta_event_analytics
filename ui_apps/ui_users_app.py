@@ -8,7 +8,7 @@ number_of_pages_option = True
 
 app = QApplication(sys.argv)
 w = QWidget()
-w.setWindowTitle('Insta event analytics')
+w.setWindowTitle('Event users')
 w.setWindowIcon(QtGui.QIcon('C:\\Users\\Admin\\Desktop\\insta.jpg'))
 w.resize(440, 150)
 
@@ -84,51 +84,54 @@ def run_app():
         res = requests.get(main_page_url, params=payload).json()
         cursor = res['graphql']['hashtag']['edge_hashtag_to_media']['page_info'][
             'end_cursor']  # getting max id of the second page
-        second_page = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor
-        pages_list.append(second_page)
-        page_url = second_page
-        if number_of_pages_option is True:
-            while cursor is not None:
-                try:
-                    res_next = requests.get(page_url, params=payload).json()  # getting an instagram page info as json
-                    cursor = res_next['graphql']['hashtag']['edge_hashtag_to_media']['page_info'][
-                        'end_cursor']  # getting maxid code to paginate
-                    if cursor is not None:
-                        page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor  # getting next page
-                        pages_list.append(page_url)
-                        print('processing time...' + str(round(time.clock(), 2)) + " seconds")
-                except requests.exceptions.HTTPError as errh:
-                    print("Http Error:", errh);
-                    time.sleep(10)
-                except requests.exceptions.ConnectionError as errc:
-                    print("Error Connecting:", errc);
-                    time.sleep(10)
-                except requests.exceptions.Timeout as errt:
-                    print("Timeout Error:", errt);
-                    time.sleep(10)
-                except requests.exceptions.RequestException as err:
-                    print("OOps: Something Else", err)
-        elif number_of_pages_option is False:
-            for i in range(number_of_pages_to_parse):
-                try:
-                    res_next = requests.get(page_url, params=payload).json()  # getting an instagram page info as json
-                    cursor = res_next['graphql']['hashtag']['edge_hashtag_to_media']['page_info'][
-                        'end_cursor']  # getting maxid code to paginate
-                    if cursor is not None:
-                        page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor  # getting next page
-                        pages_list.append(page_url)
-                        print('processing time...' + str(round(time.clock(), 2)) + " seconds")
-                except requests.exceptions.HTTPError as errh:
-                    print("Http Error:", errh);
-                    time.sleep(10)
-                except requests.exceptions.ConnectionError as errc:
-                    print("Error Connecting:", errc);
-                    time.sleep(10)
-                except requests.exceptions.Timeout as errt:
-                    print("Timeout Error:", errt);
-                    time.sleep(10)
-                except requests.exceptions.RequestException as err:
-                    print("OOps: Something Else", err)
+        try:
+            second_page = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor
+            pages_list.append(second_page)
+            page_url = second_page
+            if number_of_pages_option is True:
+                while cursor is not None:
+                    try:
+                        res_next = requests.get(page_url, params=payload).json()  # getting an instagram page info as json
+                        cursor = res_next['graphql']['hashtag']['edge_hashtag_to_media']['page_info'][
+                            'end_cursor']  # getting maxid code to paginate
+                        if cursor is not None:
+                            page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor  # getting next page
+                            pages_list.append(page_url)
+                            print('processing time...' + str(round(time.clock(), 2)) + " seconds")
+                    except requests.exceptions.HTTPError as errh:
+                        print("Http Error:", errh);
+                        time.sleep(10)
+                    except requests.exceptions.ConnectionError as errc:
+                        print("Error Connecting:", errc);
+                        time.sleep(10)
+                    except requests.exceptions.Timeout as errt:
+                        print("Timeout Error:", errt);
+                        time.sleep(10)
+                    except requests.exceptions.RequestException as err:
+                        print("OOps: Something Else", err)
+                    except: pass
+            elif number_of_pages_option is False:
+                for i in range(number_of_pages_to_parse):
+                    try:
+                        res_next = requests.get(page_url, params=payload).json()  # getting an instagram page info as json
+                        cursor = res_next['graphql']['hashtag']['edge_hashtag_to_media']['page_info'][
+                            'end_cursor']  # getting maxid code to paginate
+                        if cursor is not None:
+                            page_url = "https://www.instagram.com/explore/tags/" + hashtag + "/?__a=1&max_id=" + cursor  # getting next page
+                            pages_list.append(page_url)
+                            print('processing time...' + str(round(time.clock(), 2)) + " seconds")
+                    except requests.exceptions.HTTPError as errh:
+                        print("Http Error:", errh);
+                        time.sleep(10)
+                    except requests.exceptions.ConnectionError as errc:
+                        print("Error Connecting:", errc);
+                        time.sleep(10)
+                    except requests.exceptions.Timeout as errt:
+                        print("Timeout Error:", errt);
+                        time.sleep(10)
+                    except requests.exceptions.RequestException as err:
+                        print("OOps: Something Else", err)
+        except: pass
         return pages_list
 
     def all_users(pages_list):
@@ -143,7 +146,7 @@ def run_app():
 
     def users_parser(hashtag, output):
         number_of_pages_option = True
-        output_file = output + hashtag + '_users.csv'
+        output_file = output + '\\' + hashtag + '_users.csv'
         user_names_list = []
         unique_users = []
         pages_list = get_taged_pages(hashtag)

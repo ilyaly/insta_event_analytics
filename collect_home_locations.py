@@ -27,8 +27,8 @@ else:
     geocoding_option = input('Enter "YES" if you want to geocode location or "NO" if you dont\n')
 
 
-output_file = output + 'homes.csv'
-output_file_geo = output + '_homes_geo.csv'
+output_file = output + '\homes.csv'
+output_file_geo = output + '\_homes_geo.csv'
 
 def save_list_as_scv(output_path,list,encoding='utf-8'):
     with open(output_path, "w") as output:
@@ -157,7 +157,7 @@ def get_home_locations_for_users_list(users_list):
         save_list_as_scv(output_file, users_home_locations_list)
         if geocoding_option is True:
             user_home_geo = geocoder.arcgis(str(home_location)).latlng
-            users_home_locations_geo_list.append(str(user_home_geo))
+            users_home_locations_geo_list.append(user_home_geo)
             save_list_as_scv(output_file_geo, users_home_locations_geo_list)
         else: pass
 
