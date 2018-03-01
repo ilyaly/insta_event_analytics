@@ -1,6 +1,6 @@
 from collections import Counter
 import requests,sys,time,csv,json
-from geocoder import *
+import geocoder
 from PySide.QtGui import *
 from PySide import QtGui
 #This script collects a list with homes loactions of given users
@@ -44,13 +44,19 @@ dirlist = []
 
 def get_in_file():
     direct = QFileDialog.getOpenFileName()
-    filelist.append(direct)
+    filelist.append(direct[0])
     return direct
 def get_out_dir():
     direct = QFileDialog.getExistingDirectory()
     dirlist.append(direct)
     return direct
 def run_app():
+    output = dirlist[0]
+    # output.replace('\\','\\\\')
+    users_csv = filelist[0]
+    output_file = output + 'homes.csv'
+    output_file_geo = output + '_homes_geo.csv'
+
     def save_list_as_scv(output_path,list,encoding='utf-8'):
         with open(output_path, "w") as output:
             writer = csv.writer(output, lineterminator='\n')
@@ -86,43 +92,44 @@ def run_app():
     def get_user_posts_urls(username,number_of_pages=5):
         posts_urls = []
         main_page_url = "https://www.instagram.com/%s/" % username
-        respose = requests.get(main_page_url,params=payload).json()
-        posts_urls.append(get_post_urls_from_page(respose))
-        cursor = respose['user']['media']['page_info']['end_cursor']
         try:
-            second_page = main_page_url + user_pagination_sufix + cursor
-            next_page_url = second_page
-        except requests.exceptions.HTTPError as errh:
-            print("Http Error:", errh) ; time.sleep(10)
-        except requests.exceptions.ConnectionError as errc:
-            print("Error Connecting:", errc) ; time.sleep(10)
-        except requests.exceptions.Timeout as errt:
-            print("Timeout Error:", errt) ; time.sleep(10)
-        except requests.exceptions.RequestException as err:
-            print("OOps: Something Else", err)
-
-        for p in range(number_of_pages-1):
+            respose = requests.get(main_page_url,params=payload).json()
+            posts_urls.append(get_post_urls_from_page(respose))
+            cursor = respose['user']['media']['page_info']['end_cursor']
             try:
-                respose = requests.get(next_page_url, params=payload).json()
-                posts_urls.append(get_post_urls_from_page(respose))
-                cursor = respose['user']['media']['page_info']['end_cursor']
-                if cursor is not None:
-                    next_page_url = main_page_url + user_pagination_sufix + cursor
-
+                second_page = main_page_url + user_pagination_sufix + cursor
+                next_page_url = second_page
             except requests.exceptions.HTTPError as errh:
-                print("Http Error:", errh); time.sleep(10)
-                time.sleep(10)
+                print("Http Error:", errh) ; time.sleep(10)
             except requests.exceptions.ConnectionError as errc:
-                print("Error Connecting:", errc); time.sleep(10)
-                time.sleep(10)
+                print("Error Connecting:", errc) ; time.sleep(10)
             except requests.exceptions.Timeout as errt:
-                print("Timeout Error:", errt); time.sleep(10)
-                time.sleep(10)
-            except json.decoder.JSONDecodeError as jerr:
-                print('Json error', jerr)
+                print("Timeout Error:", errt) ; time.sleep(10)
             except requests.exceptions.RequestException as err:
-                print("OOps: Something Else 1", err)
+                print("OOps: Something Else", err)
 
+            for p in range(number_of_pages-1):
+                try:
+                    respose = requests.get(next_page_url, params=payload).json()
+                    posts_urls.append(get_post_urls_from_page(respose))
+                    cursor = respose['user']['media']['page_info']['end_cursor']
+                    if cursor is not None:
+                        next_page_url = main_page_url + user_pagination_sufix + cursor
+
+                except requests.exceptions.HTTPError as errh:
+                    print("Http Error:", errh); time.sleep(10)
+                    time.sleep(10)
+                except requests.exceptions.ConnectionError as errc:
+                    print("Error Connecting:", errc); time.sleep(10)
+                    time.sleep(10)
+                except requests.exceptions.Timeout as errt:
+                    print("Timeout Error:", errt); time.sleep(10)
+                    time.sleep(10)
+                except json.decoder.JSONDecodeError as jerr:
+                    print('Json error', jerr)
+                except requests.exceptions.RequestException as err:
+                    print("OOps: Something Else 1", err)
+        except : pass
         return posts_urls
 
     def get_user_home_location_from_posts(posts_urls):
@@ -186,10 +193,7 @@ def run_app():
 
 
     def parse_location():
-        output = dirlist[0]
-        users_csv = filelist[0]
-        output_file = output + 'homes.csv'
-        output_file_geo = output + '_homes_geo.csv'
+
         users = open_csv_as_list(users_csv)
         homes = get_home_locations_for_users_list(users)[0]
         geo = get_home_locations_for_users_list(users)[1]

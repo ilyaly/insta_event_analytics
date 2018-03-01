@@ -3,7 +3,7 @@ import requests
 import time
 import csv
 import json
-from csv_geocode import *
+import geocoder
 
 #This script collects a list with homes loactions of given users
 
@@ -65,43 +65,44 @@ def get_post_urls_from_page(response):
 def get_user_posts_urls(username,number_of_pages=5):
     posts_urls = []
     main_page_url = "https://www.instagram.com/%s/" % username
-    respose = requests.get(main_page_url,params=payload).json()
-    posts_urls.append(get_post_urls_from_page(respose))
-    cursor = respose['user']['media']['page_info']['end_cursor']
     try:
-        second_page = main_page_url + user_pagination_sufix + cursor
-        next_page_url = second_page
-    except requests.exceptions.HTTPError as errh:
-        print("Http Error:", errh) ; time.sleep(10)
-    except requests.exceptions.ConnectionError as errc:
-        print("Error Connecting:", errc) ; time.sleep(10)
-    except requests.exceptions.Timeout as errt:
-        print("Timeout Error:", errt) ; time.sleep(10)
-    except requests.exceptions.RequestException as err:
-        print("OOps: Something Else", err)
-
-    for p in range(number_of_pages-1):
+        respose = requests.get(main_page_url, params=payload).json()
+        posts_urls.append(get_post_urls_from_page(respose))
+        cursor = respose['user']['media']['page_info']['end_cursor']
         try:
-            respose = requests.get(next_page_url, params=payload).json()
-            posts_urls.append(get_post_urls_from_page(respose))
-            cursor = respose['user']['media']['page_info']['end_cursor']
-            if cursor is not None:
-                next_page_url = main_page_url + user_pagination_sufix + cursor
-
+            second_page = main_page_url + user_pagination_sufix + cursor
+            next_page_url = second_page
         except requests.exceptions.HTTPError as errh:
-            print("Http Error:", errh); time.sleep(10)
-            time.sleep(10)
+            print("Http Error:", errh) ; time.sleep(10)
         except requests.exceptions.ConnectionError as errc:
-            print("Error Connecting:", errc); time.sleep(10)
-            time.sleep(10)
+            print("Error Connecting:", errc) ; time.sleep(10)
         except requests.exceptions.Timeout as errt:
-            print("Timeout Error:", errt); time.sleep(10)
-            time.sleep(10)
-        except json.decoder.JSONDecodeError as jerr:
-            print('Json error', jerr)
+            print("Timeout Error:", errt) ; time.sleep(10)
         except requests.exceptions.RequestException as err:
-            print("OOps: Something Else 1", err)
+            print("OOps: Something Else", err)
 
+        for p in range(number_of_pages-1):
+            try:
+                respose = requests.get(next_page_url, params=payload).json()
+                posts_urls.append(get_post_urls_from_page(respose))
+                cursor = respose['user']['media']['page_info']['end_cursor']
+                if cursor is not None:
+                    next_page_url = main_page_url + user_pagination_sufix + cursor
+
+            except requests.exceptions.HTTPError as errh:
+                print("Http Error:", errh); time.sleep(10)
+                time.sleep(10)
+            except requests.exceptions.ConnectionError as errc:
+                print("Error Connecting:", errc); time.sleep(10)
+                time.sleep(10)
+            except requests.exceptions.Timeout as errt:
+                print("Timeout Error:", errt); time.sleep(10)
+                time.sleep(10)
+            except json.decoder.JSONDecodeError as jerr:
+                print('Json error', jerr)
+            except requests.exceptions.RequestException as err:
+                print("OOps: Something Else 1", err)
+    except: pass
     return posts_urls
 
 def get_user_home_location_from_posts(posts_urls):
