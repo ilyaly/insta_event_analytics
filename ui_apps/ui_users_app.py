@@ -1,6 +1,4 @@
 import sys,requests,csv,time
-import PySide
-from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide import QtGui
 post_url = 'https://www.instagram.com/p/'
