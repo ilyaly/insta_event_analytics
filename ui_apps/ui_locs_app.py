@@ -3,6 +3,7 @@ import requests,sys,time,csv,json
 import geocoder
 from PySide.QtGui import *
 from PySide import QtGui
+import json.decoder
 #This script collects a list with homes loactions of given users
 
 payload = {'__a': '1'}
@@ -63,7 +64,7 @@ def run_app():
                 try:
                     writer.writerow([val])
                 except UnicodeEncodeError as err:
-                    print('Decoding this shit' + str(err))
+                    print('Decoding none utf-8 string' + str(err))
                     try:
                         val = val.encode('cp1251').decode('utf-8')
                         writer.writerow([val])
@@ -152,9 +153,11 @@ def run_app():
                     time.sleep(10)
                 except json.decoder.JSONDecodeError as jerr:
                     print('Json error', jerr)
-                    user_locations.append('notdefined')
+                    user_locations.append('undefined')
+                except ValueError as ver:
+                    print("Value error",ver)
                 except requests.exceptions.RequestException as err:
-                    print("OOps: Something Else 2", err)
+                    print("OOps: Something Else", err)
                 except: pass
         count_locations = Counter(user_locations)
         try:

@@ -37,7 +37,7 @@ def save_list_as_scv(output_path,list,encoding='utf-8'):
             try:
                 writer.writerow([val])
             except UnicodeEncodeError as err:
-                print('Decoding this shit' + str(err))
+                print('Decoding none utf-8 string' + str(err))
                 try:
                     val = val.encode('cp1251').decode('utf-8')
                     writer.writerow([val])
