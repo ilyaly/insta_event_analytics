@@ -32,8 +32,8 @@
 
 **Скрипты с интерфейсом**
 
-Перейдите по ссылке: https://github.com/ilyaly/insta_event_analytics/releases
-Скачайте файлы:
+Перейдите по ссылке: https://github.com/ilyaly/insta_event_analytics/releases, 
+скачайте файлы:
 ui_locs_app.exe
 ui_map_app.exe
 ui_users_app.exe
