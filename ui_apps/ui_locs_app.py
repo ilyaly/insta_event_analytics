@@ -1,3 +1,4 @@
+import PySide
 from collections import Counter
 import requests,sys,time,csv,json
 import geocoder
@@ -21,7 +22,7 @@ geocoding_option = True
 app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Users home locations')
-w.setWindowIcon(QtGui.QIcon('C:\\Users\\Admin\\Desktop\\insta.jpg'))
+w.setWindowIcon(QtGui.QIcon('insta.jpg'))
 w.resize(440, 150)
 
 info = QLabel('Выберите *.csv с пользователям и задайте путь сохранения, нажмите "Искать пользователей"\nЗа процессом можно следить в консоли.',w)

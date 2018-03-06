@@ -1,5 +1,6 @@
+import PySide
 from geojson import Feature, Point, FeatureCollection
-import csv,geojson,sys
+import csv, geojson, sys
 from PySide.QtGui import *
 from PySide import QtGui
 
@@ -7,10 +8,10 @@ from PySide import QtGui
 app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Create map')
-w.setWindowIcon(QtGui.QIcon('C:\\Users\\Admin\\Desktop\\insta.jpg'))
-w.resize(440, 150)
+w.setWindowIcon(QtGui.QIcon('insta.jpg'))
+w.resize(440, 210)
 
-info = QLabel('Выберите *.csv с координатами локаций и задайте путь сохранения, нажмите "Создать карту"\nЗа процессом можно следить в консоли.',w)
+info = QLabel('<b>Выберите *.csv с координатами локаций и задайте путь сохранения.\nНажмите "Создать карту". За процессом можно следить в консоли.</b>',w)
 info.resize(420,40)
 info.move(20,10)
 
@@ -23,12 +24,22 @@ out_dir = QPushButton('Выберить директорию сохранени�
 out_dir.resize(400,20)
 out_dir.move(20,80)
 
+map_type_label = QLabel('<b>Выберите тип карты</b>',w)
+map_type_label.resize(400,20)
+map_type_label.move(20,110)
+map_type = QComboBox(w)
+map_type.resize(400,20)
+map_type.move(20,140)
+map_type.addItem('Обычная')
+map_type.addItem('Кластерная')
+
+
 button = QPushButton('Определить локации', w)
 button.resize(400,20)
-button.move(20, 110)
+button.move(20, 170)
 filelist = []
 dirlist = []
-
+map_type_list = [0]
 def get_in_file():
     direct = QFileDialog.getOpenFileName()
     filelist.append(direct[0])
@@ -37,6 +48,11 @@ def get_out_dir():
     direct = QFileDialog.getExistingDirectory()
     dirlist.append(direct)
     return direct
+
+def map_type_selection():
+    mtype = QComboBox.currentIndex(map_type)
+    map_type_list[0] = mtype
+
 def run_app():
     def csv_to_json(path_to_csv):
         features_list = []
@@ -44,15 +60,17 @@ def run_app():
             reader = csv.reader(f)
             pages_list = list(reader)
         for p in pages_list:
-            val = p[0]
-            val = val.replace('[', '')
-            val = val.replace(']', '')
-            val = val.replace(',','')
-            val = val.split()
+            try:
+                val = p[0]
+                val = val.replace('[', '')
+                val = val.replace(']', '')
+                val = val.replace(',','')
+                val = val.split()
+            except: val = 'undefined'
             try:
                 j_point = Feature(geometry=Point((float(val[1]), float(val[0]))))
                 features_list.append(j_point)
-            except: pass
+            except: val = 'undefined'
         feature_collection = FeatureCollection(features_list)
         return feature_collection
 
@@ -73,7 +91,7 @@ def run_app():
     as a Leaflet visualization.
     """
 
-    def html(obj, \
+    def html_map(obj, \
              src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3', \
              service='https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png' \
              ):
@@ -163,15 +181,18 @@ def run_app():
         output_path = output_path + '\\map.html'
         with open(output_path, "w") as output:
             output.write(page)
-        print('Saving to csv has been finished!')
+        print('Map has been saved!')
 
-
-    page = html_clust(csv_to_json(filelist[0]))
+    if map_type_list[0] == 0:
+        page = html_map(csv_to_json(filelist[0]))
+    else:
+        page = html_clust(csv_to_json(filelist[0]))
     save_html_map(dirlist[0], page)
 
 in_dir.clicked.connect(get_in_file)
 out_dir.clicked.connect(get_out_dir)
 button.clicked.connect(run_app)
+map_type.activated.connect(map_type_selection)
 
 w.show()
 app.exec_()
