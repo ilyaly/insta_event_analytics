@@ -3,13 +3,14 @@ from geojson import Feature, Point, FeatureCollection
 import csv, geojson, sys
 from PySide.QtGui import *
 from PySide import QtGui
+import webbrowser
 
 
 app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Create map')
 w.setWindowIcon(QtGui.QIcon('insta.jpg'))
-w.resize(440, 210)
+w.resize(440, 200)
 
 info = QLabel('Выберите *.csv с координатами локаций, тип карты и задайте путь сохранения.\nНажмите "Создать карту".',w)
 info.resize(420,40)
@@ -37,6 +38,9 @@ map_type.addItem('Кластерная')
 button = QPushButton('Определить локации', w)
 button.resize(400,20)
 button.move(20, 170)
+
+
+
 filelist = []
 dirlist = []
 map_type_list = [0]
@@ -52,6 +56,7 @@ def get_out_dir():
 def map_type_selection():
     mtype = QComboBox.currentIndex(map_type)
     map_type_list[0] = mtype
+
 
 def run_app():
     def csv_to_json(path_to_csv):
@@ -182,17 +187,20 @@ def run_app():
         with open(output_path, "w") as output:
             output.write(page)
         print('Map has been saved!')
+        return output_path
 
     if map_type_list[0] == 0:
         page = html_map(csv_to_json(filelist[0]))
     else:
         page = html_clust(csv_to_json(filelist[0]))
-    save_html_map(dirlist[0], page)
+    map = str(save_html_map(dirlist[0], page))
+    webbrowser.open(map)
+
+
 
 in_dir.clicked.connect(get_in_file)
 out_dir.clicked.connect(get_out_dir)
 button.clicked.connect(run_app)
 map_type.activated.connect(map_type_selection)
-
 w.show()
 app.exec_()
