@@ -23,7 +23,7 @@ app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Users home locations')
 w.setWindowIcon(QtGui.QIcon('insta.jpg'))
-w.resize(440, 150)
+w.resize(440, 210)
 
 info = QLabel('Выберите *.csv с пользователям и задайте путь сохранения, нажмите "Искать пользователей"\nЗа процессом можно следить в консоли.',w)
 info.resize(420,40)
@@ -38,11 +38,24 @@ out_dir = QPushButton('Выберить директорию сохранени�
 out_dir.resize(400,20)
 out_dir.move(20,80)
 
+precision_label = QLabel('<b>Выберите количество постов для анализа домашней локации</b>',w)
+precision_label.resize(400,20)
+precision_label.move(20,110)
+
+precision = QComboBox(w)
+precision.addItem('24')
+precision.addItem('48')
+precision.addItem('96')
+precision.addItem('192')
+precision.resize(400,20)
+precision.move(20,140)
+
 button = QPushButton('Определить локации', w)
 button.resize(400,20)
-button.move(20, 110)
+button.move(20, 170)
 filelist = []
 dirlist = []
+prec_list = [0]
 
 def get_in_file():
     direct = QFileDialog.getOpenFileName()
@@ -52,6 +65,18 @@ def get_out_dir():
     direct = QFileDialog.getExistingDirectory()
     dirlist.append(direct)
     return direct
+def get_precision():
+    prec = QComboBox.currentIndex(precision)
+    if prec == 0:
+        prec_list[0] = 2
+    elif prec == 1:
+        prec_list[0] = 4
+    elif prec == 2:
+        prec_list[0] = 8
+    elif prec == 3:
+        prec_list[0] = 16
+    return prec
+
 def run_app():
     output = dirlist[0]
     users_csv = filelist[0]
@@ -109,7 +134,7 @@ def run_app():
             except requests.exceptions.RequestException as err:
                 print("OOps: Something Else", err)
 
-            for p in range(number_of_pages-1):
+            for p in range(number_of_pages):
                 try:
                     respose = requests.get(next_page_url, params=payload).json()
                     posts_urls.append(get_post_urls_from_page(respose))
@@ -182,7 +207,8 @@ def run_app():
         users_home_locations_geo_list = []
         users_home_locations_list = []
         for user in users_list:
-            posts_urls = get_user_posts_urls(user)
+            posts_urls = get_user_posts_urls(user,int(prec_list[0]))
+            print(int(prec_list[0]))
             home_location = get_user_home_location_from_posts(posts_urls)
             users_home_locations_list.append(home_location)
             save_list_as_scv(output_file, users_home_locations_list)
@@ -211,5 +237,6 @@ def run_app():
 in_dir.clicked.connect(get_in_file)
 out_dir.clicked.connect(get_out_dir)
 button.clicked.connect(run_app)
+precision.activated.connect(get_precision)
 w.show()
 app.exec_()

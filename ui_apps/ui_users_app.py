@@ -10,7 +10,7 @@ number_of_pages_option = True
 app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Event users')
-w.setWindowIcon(QtGui.QIcon('docs\\insta.jpg'))
+w.setWindowIcon(QtGui.QIcon('insta.jpg'))
 w.resize(440, 150)
 
 info = QLabel('Введите хештег и задайте путь сохранения, нажмите "Искать пользователей"\nЗа процессом можно следить в консоли.',w)
