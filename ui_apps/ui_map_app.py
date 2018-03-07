@@ -5,7 +5,6 @@ from PySide.QtGui import *
 from PySide import QtGui
 import webbrowser
 
-
 app = QApplication(sys.argv)
 w = QWidget()
 w.setWindowTitle('Create map')
