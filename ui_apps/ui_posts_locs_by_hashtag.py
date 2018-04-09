@@ -5,7 +5,7 @@ from PySide import QtCore
 
 app = QtGui.QApplication(sys.argv)
 wind = QtGui.QMainWindow()
-wind.resize(220,100)
+wind.resize(220,150)
 wind.move(100,100)
 
 tag_label = QtGui.QLabel('Enter hashtag to define posts locations',wind)

@@ -155,6 +155,8 @@ def run_app():
         for u_list in user_names_list:
             for us in u_list:
                 unique_users.append(us)
+        unique_users = set(unique_users)
+        unique_users = list(unique_users)
         save_list_as_scv(output_file, unique_users)
         print('Processing has been finished!')
     users_parser(tag,direct)
