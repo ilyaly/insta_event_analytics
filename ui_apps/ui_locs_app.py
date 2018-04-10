@@ -110,8 +110,8 @@ def run_app():
     def get_post_urls_from_page(response):
         posts_urls = []
         res_user = response
-        for r in res_user['user']['media']['nodes']:
-            url = 'https://www.instagram.com/p/' + r['code'] + '/'
+        for r in res_user['user']['edge_owner_to_timeline_media']['edges']:
+            url = 'https://www.instagram.com/p/' + r['node']['shortcode'] + '/'
             posts_urls.append(url)
         return posts_urls
 
@@ -119,9 +119,9 @@ def run_app():
         posts_urls = []
         main_page_url = "https://www.instagram.com/%s/" % username
         try:
-            respose = requests.get(main_page_url,params=payload).json()
+            respose = requests.get(main_page_url,params=payload).json()['graphql']
             posts_urls.append(get_post_urls_from_page(respose))
-            cursor = respose['user']['media']['page_info']['end_cursor']
+            cursor = respose['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
             try:
                 second_page = main_page_url + user_pagination_sufix + cursor
                 next_page_url = second_page
@@ -136,9 +136,10 @@ def run_app():
 
             for p in range(number_of_pages):
                 try:
-                    respose = requests.get(next_page_url, params=payload).json()
+                    respose = requests.get(next_page_url, params=payload).json()['graphql']
                     posts_urls.append(get_post_urls_from_page(respose))
-                    cursor = respose['user']['media']['page_info']['end_cursor']
+                    posts_urls.append(get_post_urls_from_page(respose))
+                    cursor = respose['user']['edge_owner_to_timeline_media']['page_info']['end_cursor']
                     if cursor is not None:
                         next_page_url = main_page_url + user_pagination_sufix + cursor
 
@@ -208,7 +209,6 @@ def run_app():
         users_home_locations_list = []
         for user in users_list:
             posts_urls = get_user_posts_urls(user,int(prec_list[0]))
-            print(int(prec_list[0]))
             home_location = get_user_home_location_from_posts(posts_urls)
             users_home_locations_list.append(home_location)
             save_list_as_scv(output_file, users_home_locations_list)
