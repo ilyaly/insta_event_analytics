@@ -1,63 +1,63 @@
 ![](/ui_apps/insta.jpg)
-# Insta events analytics - Аналитика туристских потоков c использованием данных Instagram
+# Insta events analytics - Analyzes of tourist flows using Instagram data (Depricated becouse of Instagram API changes)
 ![](/docs/clust_map.jpg)
-**Что это?**
+**What is it?**
 
-Данный репозиторий представляет собой набор скриптов для анализа туристских потоков на основании пользователских данных в  instagram людей или иное мероприятие.
-Скрипты написаны для использования в исследованиях посвященных событийному туризму для определения туристских потоков.
+This repository is a set of scripts for analyzing tourist flows based on user data in an instagram of people or other event.
+The scripts are written for use in research devoted to event tourism to determine tourist flows.
 
-**А есть примеры?**
+** Are there any examples? **
 
-С примером карты-результата можно ознакомится по ссылке: https://ilyaly.github.io/insta_event_analytics/index.html
-Данная карта представляет туристские потоки на фестивале "Дикая мята" в 2017 году. Для поиска посетителей использовался хештег **дикаямята2017**
+An example of a result map can be found at: https://ilyaly.github.io/insta_event_analytics/index.html
+This map represents tourist flows at the Wild Mint festival in 2017. The hashtag ** wildmaat2017 ** was used to search for visitors.
 
-**Как это работает?**
+**How ​​it works?**
 
-В репозитории представлены два скрипта:
+There are two scripts in the repository:
 - collect_users
 - collect_home_locations
 - geocoder
 - leaflet_map_creator
 
-Скрипт "collect_users" собирает имена пользователей имеющих в Instagram посты с определенным хештегом и сохраняет список имен в файл *.csv.
-Для определения туристских потоков мероприятия необходимо использовать оффициальный или самый популярный хештег мероприятия.
+The collect_users script collects the names of users having Instagram posts with a specific hashtag and saves the list of names to the * .csv file.
+To determine the tourist flows of the event, you must use the official or the most popular hashtag of the event.
 
-Скрипт "collect_homes_locatios" собирает домашние локации (geotag) пользователей из списка и сохраняет их в файл *.csv а файл с координатами в *geojson
+The "collect_homes_locatios" script collects home locations (geotag) of users from the list and saves them to a * .csv file and a file with coordinates in * geojson
 
-Скрипт "geocoder" - отдельный скрипт для геокодирования *.csv с геотегами домашних локация
+The script "geocoder" - a separate script for geocoding * .csv with geotagging home location
 
-Скрипт "leaflet_map_creator" создает HTML страницу с картой домашних локаций
+The script "leaflet_map_creator" creates an HTML page with a map of home locations
 
-В каталоге UI_apps находятся скрипты с пользовательским интерфейсом. Для запуска небходим PySide.
+In the UI_apps directory there are scripts with a user interface. To run, we need PySide.
 
-**Скрипты с интерфейсом**
+** Scripts with interface **
 
-Перейдите по ссылке: https://github.com/ilyaly/insta_event_analytics/releases, 
-скачайте файлы:
+Follow the link: https://github.com/ilyaly/insta_event_analytics/releases,
+Download files:
 ui_locs_app.exe
 ui_map_app.exe
 ui_users_app.exe
 
-Пользуйтесь скриптами с простым UI.
+Use simple UI scripts.
 
 
-**Принцип работы алгоритмов**
+** The principle of the algorithms **
 
-- 1.Скрипт собирает список ссылок на все посты с заданным хештегом. 
-- 2.Делает запрос к странице каждого поста из списка и получает имя пользователя. Из списка пользователей убираются дублирующие значения.
-- 3.Для каждого пользователя собираются ссылки на последние 48 постов ( количество можно изменить, выбрано для приемлемого времени обработки с приемлемой точностью определения домашней локации).
-- 4.Делается запрос на страницу каждого поста и собирается геопозиция поста
-- 5.Составляется список геопозиций пользователя и выбирается наиболее часто встречающаяся.
-- 6.Данная локация считается домашней и добавляется в список домашних локаций
+- 1. Script collects a list of links to all posts with a given hashtag.
+- 2. Makes a request to the page of each post from the list and gets the user name. Duplicate values ​​are removed from the list of users.
+- 3. Links to the last 48 posts are collected for each user (the quantity can be changed, selected for an acceptable processing time with an acceptable accuracy in determining the home location).
+- 4. A request is made to the page of each post and the geo-location of the post is collected.
+- 5. A list of user geo-positions is compiled and the most frequently occurring is selected.
+- 6. This location is considered home and is added to the list of home locations
 
-**Как пользоваться?**
+**How ​​to use?**
 
-Запустите нужный скрипт и следуйте инструкциям в консоли Python.
-Или скачайте *.exe фалйы по ссылке https://github.com/ilyaly/insta_event_analytics/releases и работайте через интерфейс.
+Run the desired script and follow the instructions in the Python console.
+Or download * .exe files from https://github.com/ilyaly/insta_event_analytics/releases link and work through the interface.
 
 
-**Зависимости**
+** Dependencies **
 
 Python 3,
 Libs: geocoder.py, geojson.py
-Для скриптов с UI - PySide.
+For scripts with UI - PySide.
