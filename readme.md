@@ -1,5 +1,5 @@
 ![](/ui_apps/insta.jpg)
-# Insta events analytics - Analyzes of tourist flows using Instagram data (Depricated becouse of Instagram API changes)
+# Insta events analytics - Analyzes of tourist flows using Instagram data (Depricated because of Instagram API changes)
 ![](/docs/clust_map.jpg)
 **What is it?**
 
